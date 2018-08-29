@@ -11,11 +11,12 @@ File author: Connor Adams
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 typedef struct da DA;
 
 extern DA   *newDA(void);
-extern void  setDAdisplay(DA *,void (*)(void *,FILE *));
+extern void  setDAdisplay(DA *items,void (*dpMethod)(void *,FILE *));
 extern void  setDAfree(DA *,void (*)(void *));
 extern void  insertDA(DA *items,int index,void *value);
 extern void *removeDA(DA *items,int index);
