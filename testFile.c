@@ -26,7 +26,7 @@ main(void)
   DA *items = newDA();
   setDAfree(items,freeINTEGER);
   showItems(items);
-  /*insertDA(items,0,newINTEGER(3));                 //insert at front
+  insertDA(items,0,newINTEGER(3));                 //insert at front
   insertDA(items,sizeDA(items),newINTEGER(2));     //insert at back
   insertDA(items,1,newINTEGER(1));                 //insert at middle
   showItems(items);
@@ -39,7 +39,7 @@ main(void)
   int x = getINTEGER((INTEGER *) getDA(items,0));  //get the first item
   printf("The first item is %d.\n",x);
   printf("Freeing the list.\n");
-  freeDA(items);*/
+  freeDA(items);
   return 0;
 }
 

@@ -12,25 +12,31 @@ struct da
 {
   // Components
   void **data;
-  int capacity, sizeDA; // Capacity == Total size, size == used size
+  int capacity, sizeDA, debugFlag; // Capacity == Total size, size == used size
   void (*displayMethod)(void *,FILE *);
   void (*freeMethod)(void *);
 };
 
 // This function is just going to double the size of a dynamic array
-void doubleStorage(DA *dynamicArr)
+void doubleStorage(DA *items)
 {
-  if (dynamicArr->data == NULL)
+  if (items->data == NULL)
   {
-    dynamicArr->data = (void**)malloc(sizeof(void*) * dynamicArr->capacity);
-    for (int i = 0; i < dynamicArr->capacity; i++)
+    items->data = (void**)malloc(sizeof(void*) * items->capacity);
+    for (int i = 0; i < items->capacity; i++)
     {
-      dynamicArr->data[i] = NULL;
+      items->data[i] = NULL;
     }
     return;
   }
-  dynamicArr->capacity *= 2;
-  dynamicArr->data = (void**)realloc(dynamicArr->data, sizeof(void*) * dynamicArr->capacity);
+  items->capacity *= 2;
+  items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
+}
+
+void halfStorage(DA *items)
+{
+  items->capacity /= 2;
+  items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
 }
 
 // The constructor that returns the newly initalized DA
@@ -42,60 +48,19 @@ DA *newDA(void)
   newDA->displayMethod = NULL;
   newDA->capacity = 1;
   newDA->sizeDA = 0;
+  newDA->debugFlag = NULL;
   doubleStorage(newDA);
   return newDA;
 }
 
-<<<<<<< HEAD
-// Inserts value at items index, if it isn't valid then double size
-=======
-// Inserts an element at the given index to the given DA
->>>>>>> 8cd9f71fc4880d221d4f72a865a5ed9827ff4f4e
+// Inserts an element at the given index to the given DA and double if needed
 void insertDA(DA *items,int index,void *value)
 {
-  assert(index > 0 && index <= items->capacity);
-  /*if (items->capacity > index)
+  assert(index > -1 && index <= items->capacity);
+  if (index == items->capacity || items->sizeDA == items->capacity)
   {
-    if (items->data[index] == NULL) // TODO: Fix this to not be null
-    {
-      items->data[index] = value;
-    }
-    else
-    {
-      void* shiftVal = items->data[index];
-      void* holder = NULL;
-      items->data[index] = value;
-      for (int i = index+1; i < items->capacity; i++)
-      {
-        if (items->data[i] != NULL)
-        {
-          holder = items->data[i];
-          items->data[i] = shiftVal;
-          shiftVal = holder;
-        }
-        else
-        {
-          items->data[i] = shiftVal;
-          free(shiftVal);
-          free(holder);
-          return;
-        }
-      }
-      int prevSize = items->capacity;
-      doubleStorage(items); // At this point the loop as run and the rest is full
-      items->data[prevSize] = shiftVal;
-      free(shiftVal);
-      free(holder);
-    }
+    doubleStorage(items);
   }
-  else
-  {
-    while(index > items->capacity -1)
-    {
-      doubleStorage(items);
-    }
-    items->data[index] = value;
-  }*/
   if (index < items->sizeDA)
   {
     void *holder, *prevValue;
@@ -110,9 +75,26 @@ void insertDA(DA *items,int index,void *value)
   }
   else
   {
-    doubleStorage(items);
+    items->data[index] = value;
   }
   items->sizeDA++;
+}
+
+// This function will remove a given value and return it, also shift values if needed
+void *removeDA(DA *items,int index)
+{
+  assert(index < items->sizeDA);
+  void* removedVal = items->data[index];
+  items->sizeDA -= 1;
+  for (int i = 0; i < items->sizeDA; i++)
+  {
+    items->data[i] = items->data[i+1];
+  }
+  if ((float)(items->sizeDA/items->capacity) <= 0.25f)
+  {
+    halfStorage(items);
+  }
+  return removedVal;
 }
 
 // Returns the number of items in use
@@ -121,9 +103,21 @@ int sizeDA(DA *items)
   return items->sizeDA;
 }
 
+// Stores the diplay method in the DA
 void setDAdisplay(DA *items,void (*dpMethod)(void *dpMethod,FILE *))
 {
   items->displayMethod = dpMethod;
+}
+
+// Uses the free method on an index
+void freeDA(DA *items)
+{
+  if (items->freeMethod == NULL)
+    return;
+  for(int i = 0; i < items->capacity; i++)
+  {
+    items->freeMethod(items->data[i]);
+  }
 }
 
 // The function displays held data based on output method
@@ -145,7 +139,7 @@ void displayDA(DA *items, FILE *fp)
 // Gets the data at a given slot, provided index is valid
 void *getDA(DA *items, int index)
 {
-  assert(index > 0 && index < items->capacity);
+  assert(index >= 0 && index < items->capacity);
   return items->data[index];
 }
 
@@ -162,5 +156,6 @@ void setDAfree(DA *items,void (*freeMethod)(void *))
 // Outputs the stored values followed by the number of unfilled slots
 int debugDA(DA *items,int level)
 {
-  return items->sizeDA;
+  items->debugFlag = level;
+  return items->capacity - items->sizeDA;
 }
