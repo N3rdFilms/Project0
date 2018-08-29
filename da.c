@@ -60,6 +60,7 @@ DA *newDA(void)
   return newDA;
 }
 
+// Inserts an element at the given index to the given DA
 void insertDA(DA *items,int index,void *value)
 {
   if (items->sizeOfData > index)
