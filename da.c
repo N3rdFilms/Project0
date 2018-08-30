@@ -33,6 +33,7 @@ void doubleStorage(DA *items)
   items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
 }
 
+// Function made for halving storage size for the remove function
 void halfStorage(DA *items)
 {
   items->capacity /= 2;
@@ -58,9 +59,7 @@ void insertDA(DA *items,int index,void *value)
 {
   assert(index > -1 && index <= items->capacity);
   if (index == items->capacity || items->sizeDA == items->capacity)
-  {
     doubleStorage(items);
-  }
   if (index < items->sizeDA)
   {
     void *holder, *prevValue;
@@ -91,9 +90,7 @@ void *removeDA(DA *items,int index)
     items->data[i] = items->data[i+1];
   }
   if ((float)(items->sizeDA/items->capacity) <= 0.25f && items->capacity > 1)
-  {
     halfStorage(items);
-  }
   return removedVal;
 }
 
