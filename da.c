@@ -48,7 +48,7 @@ DA *newDA(void)
   newDA->displayMethod = NULL;
   newDA->capacity = 1;
   newDA->sizeDA = 0;
-  newDA->debugFlag = NULL;
+  newDA->debugFlag = 0;
   doubleStorage(newDA);
   return newDA;
 }
@@ -158,4 +158,15 @@ int debugDA(DA *items,int level)
 {
   items->debugFlag = level;
   return items->capacity - items->sizeDA;
+}
+
+// Moves the data from donor to recipient
+void unionDA(DA *recipient, DA *donor)
+{
+  while (recipient->capacity < (recipient->sizeDA + donor->sizeDA)) // TODO: Veify This
+    doubleStorage(recipient);
+  int maxSize = recipient->sizeDA + donor->sizeDA;
+  for (int i = 0; recipient->sizeDA < maxSize; i++, recipient->sizeDA++)
+    recipient->data[recipient->sizeDA] = donor->data[i];
+  free(donor);
 }

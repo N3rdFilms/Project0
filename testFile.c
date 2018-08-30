@@ -24,11 +24,19 @@ main(void)
 {
   srandom(1);
   DA *items = newDA();
+  DA *secondItems = newDA();
   setDAfree(items,freeINTEGER);
   showItems(items);
   insertDA(items,0,newINTEGER(3));                 //insert at front
   insertDA(items,sizeDA(items),newINTEGER(2));     //insert at back
   insertDA(items,1,newINTEGER(1));                 //insert at middle
+  showItems(items);
+  insertDA(secondItems, 0,newINTEGER(8));
+  insertDA(secondItems, 0,newINTEGER(3));
+  printf("Going to show second items\n");
+  showItems(secondItems);
+  unionDA(items, secondItems);
+  printf("Union the two, output now\n");
   showItems(items);
   printf("The value ");
   INTEGER *i = removeDA(items,0);                  //remove from front
