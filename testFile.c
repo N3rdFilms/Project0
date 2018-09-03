@@ -16,8 +16,10 @@ int main(void)
 #include <stdlib.h>
 #include "integer.h"
 #include "da.h"
+#include "cda.h"
 
 static void showItems(DA *items);
+static void showCDAItems(CDA *items);
 
 int
 main(void)
@@ -48,6 +50,34 @@ main(void)
   printf("The first item is %d.\n",x);
   printf("Freeing the list.\n");
   freeDA(items);
+
+printf("END OF DA TESTING\nSTART OF CDA TESTING\n\n");
+
+  CDA *cdaItems = newCDA();
+  CDA *secondcdaItems = newCDA();
+  setCDAfree(cdaItems,freeINTEGER);
+  showCDAItems(cdaItems);
+  insertCDA(cdaItems,0,newINTEGER(3));                 //insert at front
+  insertCDA(cdaItems,sizeCDA(cdaItems),newINTEGER(2));     //insert at back
+  insertCDA(cdaItems,1,newINTEGER(1));                 //insert at middle
+  showCDAItems(cdaItems);
+  insertCDA(secondcdaItems, 0,newINTEGER(8));
+  insertCDA(secondcdaItems, 0,newINTEGER(3));
+  printf("Going to show second items\n");
+  showCDAItems(secondcdaItems);
+  unionCDA(cdaItems, secondcdaItems);
+  printf("Union the two, output now\n");
+  showCDAItems(cdaItems);
+  printf("The value ");
+  INTEGER *j = removeCDA(cdaItems,0);                  //remove from front
+  displayINTEGER(j,stdout);
+  printf(" was removed.\n");
+  freeINTEGER(j);
+  showCDAItems(cdaItems);
+  int y = getINTEGER((INTEGER *) getCDA(cdaItems,0));  //get the first item
+  printf("The first item is %d.\n",y);
+  printf("Freeing the list.\n");
+  freeCDA(cdaItems);
   return 0;
 }
 
@@ -65,4 +95,20 @@ showItems(DA *items)
   displayDA(items,stdout);
   printf(".\n");
   debugDA(items,old);
+}
+
+static void
+showCDAItems(CDA *items)
+{
+  int old;
+  setCDAdisplay(items,displayINTEGER);
+  printf("The items are ");
+  displayCDA(items,stdout);
+  printf(".\n");
+  printf("The items (debugged) are ");
+  old = debugCDA(items,1);
+  setCDAdisplay(items,0);
+  displayCDA(items,stdout);
+  printf(".\n");
+  debugCDA(items,old);
 }

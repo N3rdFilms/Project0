@@ -157,6 +157,18 @@ int debugDA(DA *items,int level)
   return items->capacity - items->sizeDA;
 }
 
+// Replaces the value or if == size makes a new one
+void *setDA(DA *items, int index, void* value )
+{
+  if (items->sizeDA == index)
+    insertDA(items, index, value);
+  else if (index > items->sizeDA)
+    return NULL; // TODO: Nullptr I tihnk?
+  else
+    items->data[index] = value;
+  return items->data[index];
+}
+
 // Moves the data from donor to recipient
 void unionDA(DA *recipient, DA *donor)
 {
