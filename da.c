@@ -40,6 +40,12 @@ void halfStorage(DA *items)
   items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
 }
 
+// Just returns the max capacity
+int capacityDA(DA *items)
+{
+	return items->capacity;
+}
+
 // The constructor that returns the newly initalized DA
 DA *newDA(void)
 {
@@ -82,10 +88,10 @@ void insertDA(DA *items,int index,void *value)
 // This function will remove a given value and return it, also shift values if needed
 void *removeDA(DA *items,int index)
 {
-  assert(index < items->sizeDA);
+  assert(index < items->sizeDA && index > -1);
   void* removedVal = items->data[index];
   items->sizeDA -= 1;
-  for (int i = 0; i < items->sizeDA; i++)
+  for (int i = index; i < items->sizeDA; i++)
   {
     items->data[i] = items->data[i+1];
   }
@@ -109,12 +115,12 @@ void setDAdisplay(DA *items,void (*dpMethod)(void *dpMethod,FILE *))
 // Uses the free method on an index
 void freeDA(DA *items)
 {
-  if (items->freeMethod == NULL)
-    return;
-  for(int i = 0; i < items->capacity; i++)
-  {
-    items->freeMethod(items->data[i]);
-  }
+	if (items->freeMethod != NULL)
+		for (int i = 0; i < items->sizeDA; i++)
+		{
+			printf("%d", i);
+			items->freeMethod(items->data[i]);
+		}
 }
 
 // The function displays held data based on output method

@@ -29,6 +29,7 @@ void halfCDAStorage(CDA *items)
   items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
 }
 
+// Creates a new CDA and returns it
 CDA *newCDA(void)
 {
   CDA *newCDA;
@@ -42,16 +43,19 @@ CDA *newCDA(void)
   return newCDA;
 }
 
+// Takes in and stores the display method for CDA
 void setCDAdisplay(CDA *items, void (*displayInput)(void *,FILE *) )
 {
   items->displayMethod = displayInput;
 }
 
+// Takes in and stores the free method for CDA
 void setCDAfree(CDA *items, void (*freeInput)(void *))
 {
   items->freeMethod = freeInput;
 }
 
+// Returns the value at index, corrected for index start num
 void *getCDA(CDA *items, int index)
 {
   assert(index >= 0 && index < items->sizeDA); // TODO: Verify capacity is 0 index and this is valid
@@ -60,6 +64,7 @@ void *getCDA(CDA *items, int index)
   return items->data[index];
 }
 
+// Inserts a value at the index, corrected for index start
 void insertCDA(CDA *items, int index, void *value)
 {
   assert(index <= items->sizeDA && index > -1);
@@ -77,7 +82,8 @@ void insertCDA(CDA *items, int index, void *value)
   items->sizeDA++;
 }
 
-void *removeCDA(CDA *items, int index)
+// Removes data at index, corrected for index start
+void *removeCDA(CDA *items, int index) // TODO: Make this correct for index
 {
   assert(index < items->sizeDA && index > -1);
   void *returnVal = items->data[index];
@@ -86,16 +92,18 @@ void *removeCDA(CDA *items, int index)
     items->data[i] = items ->data[i+1];
   }
   items->sizeDA-=1;
-  if ((float)(items->sizeDA / items->capacity) <= 0.25f)
+  if ((float)(items->sizeDA / items->capacity) <= 0.25f && items->capacity > 1)
     halfCDAStorage(items);
   return returnVal;
 }
 
+// Returns the size of the given CDA
 int sizeCDA(CDA *items)
 {
   return items->sizeDA;
 }
 
+// Combines the donor into the recipient
 void unionCDA(CDA *recipient, CDA *donor)
 {
   while (recipient->capacity < recipient->sizeDA + recipient->sizeDA)
@@ -107,10 +115,11 @@ void unionCDA(CDA *recipient, CDA *donor)
   }
 }
 
+// Uses the stored display method to display the data
 void displayCDA(CDA *items, FILE *fp) // TODO: MAKE CORRECTIONS FOR NON-0 INDEX
 {
   fprintf(fp, "[");
-  for (int i = items->startIndex; i < items->sizeDA; i++)
+  for (int i = 0; i < items->sizeDA; i++)
   {
     if (i > 0)
       fprintf(fp, ",");
@@ -132,23 +141,11 @@ int debugCDA(CDA *items,int level)
 void freeCDA(CDA *items)
 {
   if (items->freeMethod != NULL)
-  {
     for (int i = 0; i < items->sizeDA; i++)
     {
       items->freeMethod(items->data[(items->startIndex+i)%items->capacity]);
     }
-  }
 }
-
-/*
-void insertCDAfront(CDA *items, void *value)
-{
-  if (items->startIndex == 0)
-    items->startIndex = items->capacity -1;
-  else
-    items-> startIndex -= 1;
-  items->data[items->startIndex] = value;
-}*/
 
 // Replaces the value or if == size makes a new one
 void *setCDA(CDA *items, int index, void* value )

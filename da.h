@@ -27,4 +27,8 @@ extern int   sizeDA(DA *items);
 extern void  displayDA(DA *items,FILE *fp);
 extern int   debugDA(DA *items,int level);
 extern void  freeDA(DA *items);
+
+extern void doubleStorage(DA *items);
+extern void halfStorage(DA *items);
+extern int capacityDA(DA *items);
 #endif
