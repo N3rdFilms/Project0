@@ -94,7 +94,7 @@ main(void)
 	int z = getINTEGER((INTEGER *) pop(stackItems));
 	printf("The last item pop-able is %d.\n",z);
 	printf("Freeing the list.\n");
-	//freeSTACK(stackItems); //TODO: BROKEN HERE
+	freeSTACK(stackItems); //TODO: BROKEN HERE
 
 	printf("\nEND OF STACK TESTING\nSTART OF QUEUE TESTING\n\n");
 

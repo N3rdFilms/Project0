@@ -118,7 +118,6 @@ void freeDA(DA *items)
 	if (items->freeMethod != NULL)
 		for (int i = 0; i < items->sizeDA; i++)
 		{
-			printf("%d", i);
 			items->freeMethod(items->data[i]);
 		}
 }
