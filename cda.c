@@ -16,7 +16,7 @@ struct cda
 };
 
 // This function is just going to double the size of a dynamic array
-void doubleCDAStorage(CDA *items)
+void doubleCDAStorage(CDA *items) //TODO: FIC THE REALLOC ERROR: WILL NOT SHIFT AS NEEDED!!
 {
   items->capacity *= 2;
   items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
@@ -118,7 +118,7 @@ void unionCDA(CDA *recipient, CDA *donor)
 // Uses the stored display method to display the data
 void displayCDA(CDA *items, FILE *fp) // TODO: MAKE CORRECTIONS FOR NON-0 INDEX
 {
-  fprintf(fp, "[");
+  fprintf(fp, "(");
   for (int i = 0; i < items->sizeDA; i++)
   {
     if (i > 0)
@@ -128,14 +128,22 @@ void displayCDA(CDA *items, FILE *fp) // TODO: MAKE CORRECTIONS FOR NON-0 INDEX
     else
       items->displayMethod(items->data[i], fp);
   }
-  fprintf(fp, "]");
+  if (items->debugFlag > 0)
+  {
+    if(items->sizeDA > 0)
+      fprintf(fp, ",(%d)", items->capacity - items->sizeDA);
+    else
+      fprintf(fp, "(%d)", items->capacity - items->sizeDA);
+  }
+  fprintf(fp, ")");
 }
 
 // Outputs the stored values followed by the number of unfilled slots
 int debugCDA(CDA *items,int level)
 {
+  int prevVal = items->debugFlag;
   items->debugFlag = level;
-  return items->capacity - items->sizeDA;
+  return prevVal;
 }
 
 void freeCDA(CDA *items)

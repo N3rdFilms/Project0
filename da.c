@@ -135,6 +135,13 @@ void displayDA(DA *items, FILE *fp)
     else
       items->displayMethod(items->data[i], fp);
   }
+  if (items->debugFlag > 0)
+  {
+    if(items->sizeDA > 0)
+      fprintf(fp, ",[%d]", items->capacity - items->sizeDA);
+    else
+      fprintf(fp, "[%d]", items->capacity - items->sizeDA);
+  }
   fprintf(fp, "]");
 }
 
@@ -158,8 +165,9 @@ void setDAfree(DA *items,void (*freeMethod)(void *))
 // Outputs the stored values followed by the number of unfilled slots
 int debugDA(DA *items,int level)
 {
+  int prevVal = items->debugFlag;
   items->debugFlag = level;
-  return items->capacity - items->sizeDA;
+  return prevVal;
 }
 
 // Replaces the value or if == size makes a new one

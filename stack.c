@@ -11,6 +11,9 @@ File author: Connor Adams
 struct stack
 {
 	DA *dynamicArr;
+	void (*displayMethod)(void *,FILE *);
+	void (*freeMethod)(void *);
+	int debugFlag;
 };
 
 // Creates a new STACK struct
@@ -19,6 +22,7 @@ STACK *newSTACK(void)
 	STACK *newST;
 	newST = (STACK *) malloc(sizeof(STACK));
 	newST->dynamicArr = newDA();
+	newST->debugFlag = 0;
 	return newST;
 }
 
@@ -26,6 +30,7 @@ STACK *newSTACK(void)
 void setSTACKdisplay(STACK *items,void (*dpMethod)(void *dpMethod,FILE *))
 {
 	setDAdisplay(items->dynamicArr, dpMethod);
+	items->displayMethod = dpMethod;
 }
 
 // Stores the free method in the STACK via the DA
@@ -66,13 +71,32 @@ int sizeSTACK(STACK *items)
 // Shows the items in the stack in reverse order they were pushed, so index order
 void displaySTACK(STACK *items, FILE *fp)
 {
-	displayDA(items->dynamicArr, fp);
+	fprintf(fp, "|");
+	for (int i = 0; i < sizeDA(items->dynamicArr); i++)
+	{
+		if (i > 0)
+			fprintf(fp, ",");
+		if (items->displayMethod == NULL)
+			fprintf(fp, "@%p", getDA(items->dynamicArr, i));
+		else
+			items->displayMethod(getDA(items->dynamicArr, i), fp);
+	}
+	if (items->debugFlag > 0)
+	{
+		if(sizeDA(items->dynamicArr) > 0)
+			fprintf(fp, ",|%d|", capacityDA(items->dynamicArr) - sizeDA(items->dynamicArr));
+		else
+			fprintf(fp, "|%d|", capacityDA(items->dynamicArr) - sizeDA(items->dynamicArr));
+	}
+	fprintf(fp, "|");
 }
 
 // Shows the items in the order the debug mode dictates
 int debugSTACK(STACK *items, int level)
 {
-	return debugDA(items->dynamicArr, level);
+	int prevVal = items->debugFlag;
+	items->debugFlag = level;
+	return prevVal;
 }
 
 // Frees the data with the given method
