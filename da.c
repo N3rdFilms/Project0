@@ -122,6 +122,9 @@ void freeDA(DA *items)
 		{
 			items->freeMethod(items->data[i]);
 		}
+	//Trying something new
+	items->freeMethod(items->data);
+	free(items);
 }
 
 // The function displays held data based on output method
