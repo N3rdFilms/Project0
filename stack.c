@@ -16,6 +16,16 @@ struct stack
 	int debugFlag;
 };
 
+// Including the DA struct for refrencing within pointers
+struct da
+{
+	// Components
+	void **data;
+	int capacity, sizeDA, debugFlag; // Capacity == Total size, size == used size
+	void(*displayMethod)(void *, FILE *);
+	void(*freeMethod)(void *);
+};
+
 // Creates a new STACK struct
 STACK *newSTACK(void)
 {
@@ -25,6 +35,30 @@ STACK *newSTACK(void)
 	newST->debugFlag = 0;
 	return newST;
 }
+
+// This function is just going to double the size of a dynamic array
+void doubleStackStorage(DA *items)
+{
+	if (items->data == NULL)
+	{
+		items->data = (void**)malloc(sizeof(void*) * items->capacity);
+		for (int i = 0; i < items->capacity; i++)
+		{
+			items->data[i] = NULL;
+		}
+		return;
+	}
+	items->capacity *= 2;
+	items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
+}
+
+// Function made for halving storage size for the remove function
+void halfStackStorage(DA *items)
+{
+	items->capacity /= 2;
+	items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
+}
+
 
 // Stores the diplay method in the STACK via the DA
 void setSTACKdisplay(STACK *items,void (*dpMethod)(void *dpMethod,FILE *))
@@ -43,8 +77,8 @@ void setSTACKfree(STACK *items,void (*freeMethod)(void *))
 // Adds a value onto the stack
 void push(STACK *items, void *value)
 {
-	if (capacityDA(items->dynamicArr) == (sizeDA(items->dynamicArr)))
-		doubleStorage(items->dynamicArr);
+	if (items->dynamicArr->capacity == items->dynamicArr->sizeDA)
+		doubleStackStorage(items->dynamicArr);
 	insertDA(items->dynamicArr, sizeDA(items->dynamicArr), value);
 }
 
@@ -52,8 +86,8 @@ void push(STACK *items, void *value)
 void *pop(STACK *items)
 {
 	void *returnVal = removeDA(items->dynamicArr, sizeDA(items->dynamicArr) -1);
-	if ((float)(sizeDA(items->dynamicArr) / capacityDA(items->dynamicArr) <= 0.25f && capacityDA(items->dynamicArr) > 1))
-		halfStorage(items->dynamicArr);
+	if ((float)(sizeDA(items->dynamicArr) / items->dynamicArr->capacity < 0.25f && items->dynamicArr->capacity > 1))
+		halfStackStorage(items->dynamicArr);
 	return returnVal;
 }
 
@@ -73,7 +107,7 @@ int sizeSTACK(STACK *items)
 void displaySTACK(STACK *items, FILE *fp)
 {
 	fprintf(fp, "|");
-	for (int i = 0; i < sizeDA(items->dynamicArr); i++)
+	for (int i = 0; i < items->dynamicArr->sizeDA; i++)
 	{
 		if (i > 0)
 			fprintf(fp, ",");
@@ -85,9 +119,9 @@ void displaySTACK(STACK *items, FILE *fp)
 	if (items->debugFlag > 0)
 	{
 		if(sizeDA(items->dynamicArr) > 0)
-			fprintf(fp, ",|%d|", capacityDA(items->dynamicArr) - sizeDA(items->dynamicArr));
+			fprintf(fp, ",|%d|", items->dynamicArr->capacity - sizeDA(items->dynamicArr));
 		else
-			fprintf(fp, "|%d|", capacityDA(items->dynamicArr) - sizeDA(items->dynamicArr));
+			fprintf(fp, "|%d|", items->dynamicArr->capacity - sizeDA(items->dynamicArr));
 	}
 	fprintf(fp, "|");
 }

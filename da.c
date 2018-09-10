@@ -95,7 +95,7 @@ void *removeDA(DA *items,int index)
   {
     items->data[i] = items->data[i+1];
   }
-  if ((items->sizeDA / (float)items->capacity) <= 0.25f && items->capacity > 1)
+  if ((items->sizeDA / (float)items->capacity) < 0.25f && items->capacity > 1)
   {
 	  halfStorage(items);
   }

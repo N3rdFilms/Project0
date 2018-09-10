@@ -16,6 +16,15 @@ struct queue
 	int debugFlag;
 };
 
+// Again, for refrencing
+struct cda
+{
+	void **data;
+	int capacity, sizeDA, debugFlag, startIndex;
+	void(*displayMethod)(void *, FILE *);
+	void(*freeMethod)(void *);
+};
+
 // Creates a new QUEUE struct
 QUEUE *newQUEUE(void)
 {
@@ -61,21 +70,21 @@ void *peekQUEUE(QUEUE *items)
 void displayQUEUE(QUEUE *items, FILE *fp)
 {
 	fprintf(fp, "<");
-	for (int i = startIndexCDA(items->cda); i < sizeCDA(items->cda); i++)
+	for (int i = items->cda->startIndex; i < sizeCDA(items->cda); i++)
 	{
-		if (i != startIndexCDA(items->cda))
+		if (i != items->cda->startIndex)
 			fprintf(fp, ",");
 		if (items->displayMethod == NULL)
-			fprintf(fp, "@%p", getCDA(items->cda, i%capacityCDA(items->cda)));
+			fprintf(fp, "@%p", getCDA(items->cda, i % items->cda->capacity));
 		else
-			items->displayMethod(getCDA(items->cda, i%capacityCDA(items->cda)), fp);
+			items->displayMethod(getCDA(items->cda, i % items->cda->capacity), fp);
 	}
 	if (items->debugFlag > 0)
 	{
 		if (sizeCDA(items->cda) > 0)
-			fprintf(fp, ",<%d>", capacityCDA(items->cda) - sizeCDA(items->cda));
+			fprintf(fp, ",<%d>", items->cda->capacity - items->cda->sizeDA);
 		else
-			fprintf(fp, "<%d>", capacityCDA(items->cda )- sizeCDA(items->cda));
+			fprintf(fp, "<%d>", items->cda->capacity - items->cda->sizeDA);
 	}
 	fprintf(fp, ">");
 }
