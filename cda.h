@@ -20,6 +20,9 @@ extern void displayCDA(CDA *,FILE *);
 extern int  debugCDA(CDA *,int level);
 extern void freeCDA(CDA *);
 
+extern int capacityCDA(CDA *);
+extern int startIndexCDA(CDA *);
+
 #define insertCDAfront(items,value) insertCDA(items,0,value)
 #define insertCDAback(items,value)  insertCDA(items,sizeCDA(items),value)
 #define removeCDAfront(items)       removeCDA(items,0)

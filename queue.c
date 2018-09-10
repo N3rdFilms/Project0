@@ -11,6 +11,9 @@ File author: Connor Adams
 struct queue
 {
 	CDA *cda;
+	void(*displayMethod)(void *, FILE *);
+	void(*freeMethod)(void *);
+	int debugFlag;
 };
 
 // Creates a new QUEUE struct
@@ -26,12 +29,14 @@ QUEUE *newQUEUE(void)
 void setQUEUEdisplay(QUEUE *items, void(*dpMethod)(void *dpMethod, FILE *))
 {
 	setCDAdisplay(items->cda, dpMethod);
+	items->displayMethod = dpMethod;
 }
 
 // Stores the free method in the QUEUE via the CDA
 void setQUEUEfree(QUEUE *items, void(*freeMethod)(void *))
 {
 	setCDAfree(items->cda, freeMethod);
+	items->freeMethod = freeMethod;
 }
 
 // Enqueues a value, which just adds it to the end of the CDA
@@ -55,13 +60,32 @@ void *peekQUEUE(QUEUE *items)
 // Shows the values in order from lowest to highest index
 void displayQUEUE(QUEUE *items, FILE *fp)
 {
-	displayCDA(items->cda, fp);
+	fprintf(fp, "<");
+	for (int i = startIndexCDA(items->cda); i < sizeCDA(items->cda); i++)
+	{
+		if (i != startIndexCDA(items->cda))
+			fprintf(fp, ",");
+		if (items->displayMethod == NULL)
+			fprintf(fp, "@%p", getCDA(items->cda, i%capacityCDA(items->cda)));
+		else
+			items->displayMethod(getCDA(items->cda, i%capacityCDA(items->cda)), fp);
+	}
+	if (items->debugFlag > 0)
+	{
+		if (sizeCDA(items->cda) > 0)
+			fprintf(fp, ",<%d>", capacityCDA(items->cda) - sizeCDA(items->cda));
+		else
+			fprintf(fp, "<%d>", capacityCDA(items->cda )- sizeCDA(items->cda));
+	}
+	fprintf(fp, ">");
 }
 
 // Runs the debug for level
 int debugQUEUE(QUEUE *items, int level)
 {
-	return debugCDA(items->cda, level);
+	int prevVal = items->debugFlag;
+	items->debugFlag = level;
+	return prevVal;
 }
 
 // Runs the stores free algo on the cda

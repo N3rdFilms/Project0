@@ -18,8 +18,17 @@ struct cda
 // This function is just going to double the size of a dynamic array
 void doubleCDAStorage(CDA *items) //TODO: FIC THE REALLOC ERROR: WILL NOT SHIFT AS NEEDED!!
 {
-  items->capacity *= 2;
-  items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
+	void **holder = (void**)malloc(sizeof(void*) * items->capacity * 2);
+	for (int i = items->startIndex; i < items->sizeDA; i++)
+	{
+		holder[i % (items->capacity * 2)] = items->data[i % (items->capacity)];
+	}
+	items->capacity *= 2;
+	items->data = (void**)malloc(sizeof(void*) * items->capacity);
+	for (int i = items->startIndex; i < items->sizeDA; i++)
+	{
+		items->data[i % (items->capacity)] = holder[i % (items->capacity)];
+	}
 }
 
 // Function made for halving storage size for the remove function
@@ -118,53 +127,65 @@ void unionCDA(CDA *recipient, CDA *donor)
 // Uses the stored display method to display the data
 void displayCDA(CDA *items, FILE *fp) // TODO: MAKE CORRECTIONS FOR NON-0 INDEX
 {
-  fprintf(fp, "(");
-  for (int i = 0; i < items->sizeDA; i++)
-  {
-    if (i > 0)
-      fprintf(fp, ",");
-    if (items->displayMethod == NULL)
-      fprintf(fp, "@%p", items->data[i]);
-    else
-      items->displayMethod(items->data[i], fp);
-  }
-  if (items->debugFlag > 0)
-  {
-    if(items->sizeDA > 0)
-      fprintf(fp, ",(%d)", items->capacity - items->sizeDA);
-    else
-      fprintf(fp, "(%d)", items->capacity - items->sizeDA);
-  }
-  fprintf(fp, ")");
+	fprintf(fp, "(");
+	for (int i = items->startIndex; i < items->sizeDA; i++)
+	{
+		if (i != items->startIndex)
+			fprintf(fp, ",");
+		if (items->displayMethod == NULL)
+			fprintf(fp, "@%p", items->data[i%items->capacity]);
+		else
+			items->displayMethod(items->data[i%items->capacity], fp);
+	}
+	if (items->debugFlag > 0)
+	{
+		if(items->sizeDA > 0)
+			fprintf(fp, ",(%d)", items->capacity - items->sizeDA);
+		else
+			fprintf(fp, "(%d)", items->capacity - items->sizeDA);
+	}
+	fprintf(fp, ")");
+}
+
+// Just returns the current capacity
+int capacityCDA(CDA *items)
+{
+	return items->capacity;
+}
+
+// Made for refrencing values from the queue
+int startIndexCDA(CDA *items)
+{
+	return items->startIndex;
 }
 
 // Outputs the stored values followed by the number of unfilled slots
 int debugCDA(CDA *items,int level)
 {
-  int prevVal = items->debugFlag;
-  items->debugFlag = level;
-  return prevVal;
+	int prevVal = items->debugFlag;
+	items->debugFlag = level;
+	return prevVal;
 }
 
 void freeCDA(CDA *items)
 {
-  if (items->freeMethod != NULL)
-    for (int i = 0; i < items->sizeDA; i++)
-    {
-      items->freeMethod(items->data[(items->startIndex+i)%items->capacity]);
-    }
+	if (items->freeMethod != NULL)
+	for (int i = 0; i < items->sizeDA; i++)
+		{
+			items->freeMethod(items->data[(items->startIndex+i)%items->capacity]);
+		}
 }
 
 // Replaces the value or if == size makes a new one
 void *setCDA(CDA *items, int index, void* value )
 {
-  if (items->sizeDA == index)
-    insertCDA(items, index, value);
-  else if (index == -1)
-    insertCDAfront(items, value);
-  else if (index > items->sizeDA)
-    return NULL; // TODO: Nullptr I tihnk?
-  else
-    items->data[index] = value;
-  return items->data[index];
+	if (items->sizeDA == index)
+	insertCDA(items, index, value);
+	else if (index == -1)
+	insertCDAfront(items, value);
+	else if (index > items->sizeDA)
+	return NULL; // TODO: Nullptr I tihnk?
+	else
+	items->data[index] = value;
+	return items->data[index];
 }

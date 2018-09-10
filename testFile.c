@@ -123,7 +123,21 @@ main(void)
 	printf("Freeing the list.\n");
 	freeQUEUE(queueItems);
 
-  return 0;
+	printf("\nGeneral pass test. Starting deep CDA testing\n\n");
+
+	CDA *cdaTest = newCDA();
+	insertCDAfront(cdaTest, newINTEGER(5));
+	insertCDAfront(cdaTest, newINTEGER(4));
+	insertCDAfront(cdaTest, newINTEGER(3));
+	showCDAItems(cdaTest);
+	printf("Removing the value at index 1\n");
+	removeCDA(cdaTest, 1);
+	showCDAItems(cdaTest);
+	removeCDA(cdaTest, 0);
+	removeCDA(cdaTest, 0);
+	showCDAItems(cdaTest);
+
+	return 0;
 }
 
 static void

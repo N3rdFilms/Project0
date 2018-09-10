@@ -37,6 +37,7 @@ void setSTACKdisplay(STACK *items,void (*dpMethod)(void *dpMethod,FILE *))
 void setSTACKfree(STACK *items,void (*freeMethod)(void *))
 {
 	setDAfree(items->dynamicArr, freeMethod);
+	items->freeMethod = freeMethod;
 }
 
 // Adds a value onto the stack
