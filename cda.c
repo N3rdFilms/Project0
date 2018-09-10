@@ -94,16 +94,16 @@ void insertCDA(CDA *items, int index, void *value)
 // Removes data at index, corrected for index start
 void *removeCDA(CDA *items, int index) // TODO: Make this correct for index
 {
-  assert(index < items->sizeDA && index > -1);
-  void *returnVal = items->data[index];
-  for (int i = index; i < items->sizeDA-1; i++)
-  {
-    items->data[i] = items ->data[i+1];
-  }
-  items->sizeDA-=1;
-  if (((float)(items->sizeDA / (float)items->capacity) < 0.25f && items->capacity > 1) || (items->sizeDA == 0 && items->capacity > 1))
-    halfCDAStorage(items);
-  return returnVal;
+	assert(index < items->sizeDA && index > -1);
+	void *returnVal = items->data[index];
+	for (int i = index; i < items->sizeDA-1; i++)
+	{
+		items->data[i] = items ->data[i+1];
+	}
+	items->sizeDA-=1;
+	while (((float)(items->sizeDA / (float)items->capacity) < 0.25f && items->capacity > 1) )
+		halfCDAStorage(items);
+	return returnVal;
 }
 
 // Returns the size of the given CDA

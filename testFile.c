@@ -41,6 +41,12 @@ main(void)
 	showItems(items);
 	int x = getINTEGER((INTEGER *) getDA(items,0));  //get the first item
 	printf("The first item is %d.\n",x);
+	removeDA(items, 0);
+	removeDA(items, 0);
+	removeDA(items, 0);
+	removeDA(items, 0);
+	printf("Removed all items\n");
+	showItems(items);
 	printf("Freeing the list.\n");
 	freeDA(items);
 

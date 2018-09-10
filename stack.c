@@ -86,7 +86,7 @@ void push(STACK *items, void *value)
 void *pop(STACK *items)
 {
 	void *returnVal = removeDA(items->dynamicArr, sizeDA(items->dynamicArr) -1);
-	if ((float)(sizeDA(items->dynamicArr) / items->dynamicArr->capacity < 0.25f && items->dynamicArr->capacity > 1))
+	while ((float)(sizeDA(items->dynamicArr) / items->dynamicArr->capacity < 0.25f && items->dynamicArr->capacity > 1))
 		halfStackStorage(items->dynamicArr);
 	return returnVal;
 }
