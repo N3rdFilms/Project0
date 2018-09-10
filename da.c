@@ -98,7 +98,6 @@ void *removeDA(DA *items,int index)
   if ((items->sizeDA / (float)items->capacity) <= 0.25f && items->capacity > 1)
   {
 	  halfStorage(items);
-	  printf("Halving storage!\n");
   }
   return removedVal;
 }
