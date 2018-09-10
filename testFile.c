@@ -22,6 +22,9 @@ main(void)
 	insertDA(items,0,newINTEGER(3));                 //insert at front
 	insertDA(items,sizeDA(items),newINTEGER(2));     //insert at back
 	insertDA(items,1,newINTEGER(1));                 //insert at middle
+	insertDA(items, 1, newINTEGER(4));
+	showItems(items);
+	removeDA(items, 0);
 	showItems(items);
 	insertDA(secondItems, 0,newINTEGER(8));
 	insertDA(secondItems, 0,newINTEGER(3));
