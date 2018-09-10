@@ -101,7 +101,7 @@ void *removeCDA(CDA *items, int index) // TODO: Make this correct for index
     items->data[i] = items ->data[i+1];
   }
   items->sizeDA-=1;
-  if ((float)(items->sizeDA / (float)items->capacity) < 0.25f && items->capacity > 1)
+  if (((float)(items->sizeDA / (float)items->capacity) < 0.25f && items->capacity > 1) || (items->sizeDA == 0 && items->capacity > 1))
     halfCDAStorage(items);
   return returnVal;
 }

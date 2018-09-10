@@ -49,57 +49,57 @@ int capacityDA(DA *items)
 // The constructor that returns the newly initalized DA
 DA *newDA(void)
 {
-  DA *newDA;
-  newDA = (DA *) malloc(sizeof(DA));
-  newDA->data = NULL;
-  newDA->displayMethod = NULL;
-  newDA->capacity = 1;
-  newDA->sizeDA = 0;
-  newDA->debugFlag = 0;
-  doubleStorage(newDA);
-  return newDA;
+	DA *newDA;
+	newDA = (DA *) malloc(sizeof(DA));
+	newDA->data = NULL;
+	newDA->displayMethod = NULL;
+	newDA->capacity = 1;
+	newDA->sizeDA = 0;
+	newDA->debugFlag = 0;
+	doubleStorage(newDA);
+	return newDA;
 }
 
 // Inserts an element at the given index to the given DA and double if needed
 void insertDA(DA *items,int index,void *value)
 {
-  assert(index > -1 && index <= items->capacity);
-  if (index == items->capacity || items->sizeDA == items->capacity)
-    doubleStorage(items);
-  if (index < items->sizeDA)
-  {
-    void *holder, *prevValue;
-    prevValue = items->data[index];
-    items->data[index] = value;
-    for (int i = index+1; i <= items->sizeDA; i++)
-    {
-      holder = items->data[i];
-      items->data[i] = prevValue;
-      prevValue = holder;
-    }
-  }
-  else
-  {
-    items->data[index] = value;
-  }
-  items->sizeDA++;
+	assert(index > -1 && index <= items->capacity);
+	if (index == items->capacity || items->sizeDA == items->capacity)
+		doubleStorage(items);
+	if (index < items->sizeDA)
+	{
+		void *holder, *prevValue;
+		prevValue = items->data[index];
+		items->data[index] = value;
+		for (int i = index+1; i <= items->sizeDA; i++)
+		{
+			holder = items->data[i];
+			items->data[i] = prevValue;
+			prevValue = holder;
+		}
+	}
+	else
+	{
+		items->data[index] = value;
+	}
+	items->sizeDA++;
 }
 
 // This function will remove a given value and return it, also shift values if needed
 void *removeDA(DA *items,int index)
 {
-  assert(index < items->sizeDA && index > -1);
-  void* removedVal = items->data[index];
-  items->sizeDA -= 1;
-  for (int i = index; i < items->sizeDA; i++)
-  {
-    items->data[i] = items->data[i+1];
-  }
-  if ((items->sizeDA / (float)items->capacity) < 0.25f && items->capacity > 1)
-  {
-	  halfStorage(items);
-  }
-  return removedVal;
+	assert(index < items->sizeDA && index > -1);
+	void* removedVal = items->data[index];
+	items->sizeDA -= 1;
+	for (int i = index; i < items->sizeDA; i++)
+	{
+		items->data[i] = items->data[i+1];
+	}
+	if (((items->sizeDA / (float)items->capacity) < 0.25f && items->capacity > 1) || (items->sizeDA == 0 && items->capacity > 1))
+	{
+		halfStorage(items);
+	}
+	return removedVal;
 }
 
 // Returns the number of items in use
