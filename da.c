@@ -105,13 +105,13 @@ void *removeDA(DA *items,int index)
 // Returns the number of items in use
 int sizeDA(DA *items)
 {
-  return items->sizeDA;
+	return items->sizeDA;
 }
 
 // Stores the diplay method in the DA
 void setDAdisplay(DA *items,void (*dpMethod)(void *dpMethod,FILE *))
 {
-  items->displayMethod = dpMethod;
+	items->displayMethod = dpMethod;
 }
 
 // Uses the free method on an index
@@ -131,31 +131,31 @@ void freeDA(DA *items)
 // The function displays held data based on output method
 void displayDA(DA *items, FILE *fp)
 {
-  fprintf(fp, "[");
-  for (int i = 0; i < items->sizeDA; i++)
-  {
-    if (i > 0)
-      fprintf(fp, ",");
-    if (items->displayMethod == NULL)
-      fprintf(fp, "@%p", items->data[i]);
-    else
-      items->displayMethod(items->data[i], fp);
-  }
-  if (items->debugFlag > 0)
-  {
-    if(items->sizeDA > 0)
-      fprintf(fp, ",[%d]", items->capacity - items->sizeDA);
-    else
-      fprintf(fp, "[%d]", items->capacity - items->sizeDA);
-  }
-  fprintf(fp, "]");
+	fprintf(fp, "[");
+	for (int i = 0; i < items->sizeDA; i++)
+	{
+		if (i > 0)
+			fprintf(fp, ",");
+		if (items->displayMethod == NULL)
+			fprintf(fp, "@%p", items->data[i]);
+		else
+			items->displayMethod(items->data[i], fp);
+	}
+	if (items->debugFlag > 0)
+	{
+		if(items->sizeDA > 0)
+			fprintf(fp, ",[%d]", items->capacity - items->sizeDA);
+		else
+			fprintf(fp, "[%d]", items->capacity - items->sizeDA);
+	}
+	fprintf(fp, "]");
 }
 
 // Gets the data at a given slot, provided index is valid
 void *getDA(DA *items, int index)
 {
-  assert(index >= 0 && index <= items->capacity);
-  return items->data[index];
+	assert(index >= 0 && index < items->sizeDA);
+	return items->data[index];
 }
 
 // Passed a function that knows how to free a generic datatype
@@ -191,10 +191,13 @@ void *setDA(DA *items, int index, void* value )
 // Moves the data from donor to recipient
 void unionDA(DA *recipient, DA *donor)
 {
-  while (recipient->capacity < (recipient->sizeDA + donor->sizeDA)) // TODO: Veify This
-    doubleStorage(recipient);
-  int maxSize = recipient->sizeDA + donor->sizeDA;
-  for (int i = 0; recipient->sizeDA < maxSize; i++, recipient->sizeDA++)
-    recipient->data[recipient->sizeDA] = donor->data[i];
-  free(donor);
+	while (recipient->capacity < (recipient->sizeDA + donor->sizeDA)) 
+		doubleStorage(recipient);
+	int maxSize = recipient->sizeDA + donor->sizeDA;
+	for (int i = 0; recipient->sizeDA < maxSize; i++, recipient->sizeDA++)
+	{
+		recipient->data[recipient->sizeDA] = donor->data[i];
+		
+	}
+	free(donor);
 }

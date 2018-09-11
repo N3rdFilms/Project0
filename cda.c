@@ -115,13 +115,13 @@ int sizeCDA(CDA *items)
 // Combines the donor into the recipient
 void unionCDA(CDA *recipient, CDA *donor)
 {
-  while (recipient->capacity < recipient->sizeDA + recipient->sizeDA)
-    doubleCDAStorage(recipient);
-  for (int i = 0; i < donor->sizeDA; i++)
-  {
-    recipient->data[(recipient->startIndex + recipient->sizeDA)%recipient->capacity] = donor->data[i];
-    recipient->sizeDA++;
-  }
+	while (recipient->capacity < recipient->sizeDA + donor->sizeDA)
+		doubleCDAStorage(recipient);
+	for (int i = 0; i < donor->sizeDA; i++)
+	{
+		recipient->data[(recipient->sizeDA + i)%recipient->capacity] = donor->data[i];
+	}
+	recipient->sizeDA += donor->sizeDA;
 }
 
 // Uses the stored display method to display the data
@@ -171,7 +171,7 @@ void freeCDA(CDA *items)
 {
 	if (items->freeMethod != NULL)
 	{
-		for (int i = 0; i < items->sizeDA; i++)
+		for (int i = items->startIndex; i < items->sizeDA; i++)
 		{
 			items->freeMethod(items->data[(items->startIndex + i) % items->capacity]);
 		}

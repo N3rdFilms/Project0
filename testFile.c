@@ -11,6 +11,23 @@ static void showCDAItems(CDA *items);
 static void showSTACKItems(STACK *items);
 static void showQUEUEItems(QUEUE *items);
 
+struct stack
+{
+	DA *dynamicArr;
+	void(*displayMethod)(void *, FILE *);
+	void(*freeMethod)(void *);
+	int debugFlag;
+};
+
+struct queue
+{
+	CDA *cda;
+	void(*displayMethod)(void *, FILE *);
+	void(*freeMethod)(void *);
+	int debugFlag;
+};
+
+
 int
 main(void)
 {
@@ -84,26 +101,54 @@ main(void)
 	STACK *secondstackItems = newSTACK();
 	setSTACKfree(stackItems,freeINTEGER);
 	showSTACKItems(stackItems);
-	push(stackItems,newINTEGER(3));
-	push(stackItems,newINTEGER(2));
 	push(stackItems,newINTEGER(1));
+	push(stackItems, newINTEGER(4));
+	push(stackItems, newINTEGER(2));
+	push(stackItems, newINTEGER(3));
 	showSTACKItems(stackItems);
-	printf("Peek value: %p\n", peekSTACK(stackItems));
-	push(secondstackItems,newINTEGER(8));
-	push(secondstackItems,newINTEGER(3));
-	printf("Going to show second items\n");
+	push(secondstackItems, newINTEGER(3));
+	push(secondstackItems, newINTEGER(2));
+	push(secondstackItems, newINTEGER(4));
+	push(secondstackItems, newINTEGER(1));
+	push(secondstackItems, newINTEGER(3));
+	push(secondstackItems, newINTEGER(2));
+	push(secondstackItems, newINTEGER(4));
+	push(secondstackItems, newINTEGER(1));
 	showSTACKItems(secondstackItems);
-	printf("The value ");
-	//printf("%p", pop(stackItems));
-	INTEGER *k = pop(stackItems);
-	displayINTEGER(k,stdout);
-	printf(" was removed.\n");
-	freeINTEGER(k);
-	showSTACKItems(stackItems);
-	int z = getINTEGER((INTEGER *) pop(stackItems));
-	printf("The last item pop-able is %d.\n",z);
-	printf("Freeing the list.\n");
-	freeSTACK(stackItems); //TODO: BROKEN HERE
+	push(secondstackItems, pop(stackItems));
+	push(secondstackItems, pop(stackItems));
+	push(secondstackItems, pop(stackItems));
+	push(secondstackItems, pop(stackItems));
+	setSTACKdisplay(stackItems, displayINTEGER);
+	showSTACKItems(secondstackItems);
+	printf("Removing data\n");
+	removeDA(secondstackItems->dynamicArr, 0);
+	void *holder = pop(secondstackItems);
+	showSTACKItems(secondstackItems);
+	showItems(secondstackItems->dynamicArr);
+	holder = getDA(secondstackItems->dynamicArr, 0);
+	holder = getDA(secondstackItems->dynamicArr, 0);
+	holder = getDA(secondstackItems->dynamicArr, 0);
+	showSTACKItems(secondstackItems);
+	holder = peekSTACK(secondstackItems);
+	////unionDA(secondstackItems, stackItems);
+	//printf("Peek value: %p\n", peekSTACK(stackItems));
+	//push(secondstackItems,newINTEGER(8));
+	//push(secondstackItems,newINTEGER(3));
+	//printf("Going to show second items\n");
+	//showSTACKItems(secondstackItems);
+	//printf("The value ");
+	////printf("%p", pop(stackItems));
+	//INTEGER *k = pop(stackItems);
+	//displayINTEGER(k,stdout);
+	//printf(" was removed.\n");
+	//freeINTEGER(k);
+	//showSTACKItems(stackItems);
+	//int z = getINTEGER((INTEGER *) pop(stackItems));
+	//printf("The last item pop-able is %d.\n",z);
+	//printf("Freeing the list.\n");
+	free(holder);
+	freeSTACK(stackItems);
 
 	printf("\nEND OF STACK TESTING\nSTART OF QUEUE TESTING\n\n");
 
@@ -132,20 +177,19 @@ main(void)
 	printf("Freeing the list.\n");
 	freeQUEUE(queueItems);
 
-	printf("\nGeneral pass test. Starting deep CDA testing\n\n");
+	printf("\nGeneral pass test. Starting deep queue testing\n\n");
 
-	CDA *cdaTest = newCDA();
-	insertCDAfront(cdaTest, newINTEGER(5));
-	insertCDAfront(cdaTest, newINTEGER(4));
-	insertCDAfront(cdaTest, newINTEGER(3));
-	showCDAItems(cdaTest);
-	printf("Removing the value at index 1\n");
-	removeCDA(cdaTest, 1);
-	showCDAItems(cdaTest);
-	removeCDA(cdaTest, 0);
-	removeCDA(cdaTest, 0);
-	showCDAItems(cdaTest);
-
+	QUEUE *qTest = newQUEUE();
+	enqueue(qTest, newINTEGER(3));
+	enqueue(qTest, newINTEGER(2));
+	enqueue(qTest, newINTEGER(4));
+	enqueue(qTest, newINTEGER(1));
+	showQUEUEItems(qTest);
+	QUEUE *qTest2 = newQUEUE();
+	qTest2->cda = qTest->cda;
+	showQUEUEItems(qTest2);
+	unionCDA(qTest->cda, qTest2->cda);
+	showQUEUEItems(qTest);
 	return 0;
 }
 

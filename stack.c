@@ -85,10 +85,10 @@ void push(STACK *items, void *value)
 // Pops the next value from the stack
 void *pop(STACK *items)
 {
-	void *returnVal = removeDA(items->dynamicArr, sizeDA(items->dynamicArr) -1);
-	while ((float)(sizeDA(items->dynamicArr) / items->dynamicArr->capacity < 0.25f && items->dynamicArr->capacity > 1))
-		halfStackStorage(items->dynamicArr);
-	return returnVal;
+	return removeDA(items->dynamicArr, items->dynamicArr->sizeDA-1);
+	//while ((float)(sizeDA(items->dynamicArr) / items->dynamicArr->capacity < 0.25f && items->dynamicArr->capacity > 1))
+	//	halfStackStorage(items->dynamicArr);
+	//return returnVal;
 }
 
 // Shows what is next to be popped
@@ -137,5 +137,10 @@ int debugSTACK(STACK *items, int level)
 // Frees the data with the given method
 void freeSTACK(STACK *items)
 {
-	freeDA(items->dynamicArr); // TODO: THIS WAS ABORTING AND THEN STOPPED MYSTERIOUSLY
+	if (items->freeMethod != NULL)
+	{
+		freeDA(items->dynamicArr);
+		items->freeMethod(items);
+		
+	}
 }
