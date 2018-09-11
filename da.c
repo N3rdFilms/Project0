@@ -20,17 +20,17 @@ struct da
 // This function is just going to double the size of a dynamic array
 void doubleStorage(DA *items)
 {
-  if (items->data == NULL)
-  {
-    items->data = (void**)malloc(sizeof(void*) * items->capacity);
-    for (int i = 0; i < items->capacity; i++)
-    {
-      items->data[i] = NULL;
-    }
-    return;
-  }
-  items->capacity *= 2;
-  items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
+	if (items->data == NULL)
+	{
+		items->data = (void**)malloc(sizeof(void*) * items->capacity);
+		for (int i = 0; i < items->capacity; i++)
+		{
+			items->data[i] = NULL;
+		}
+		return;
+	}
+	items->capacity *= 2;
+	items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
 }
 
 // Function made for halving storage size for the remove function
@@ -118,13 +118,14 @@ void setDAdisplay(DA *items,void (*dpMethod)(void *dpMethod,FILE *))
 void freeDA(DA *items)
 {
 	if (items->freeMethod != NULL)
+	{
 		for (int i = 0; i < items->sizeDA; i++)
 		{
 			items->freeMethod(items->data[i]);
 		}
-	//Trying something new
-	items->freeMethod(items->data);
-	free(items);
+		items->freeMethod(items->data);
+		free(items);
+	}
 }
 
 // The function displays held data based on output method
@@ -153,7 +154,7 @@ void displayDA(DA *items, FILE *fp)
 // Gets the data at a given slot, provided index is valid
 void *getDA(DA *items, int index)
 {
-  assert(index >= 0 && index < items->capacity);
+  assert(index >= 0 && index <= items->capacity);
   return items->data[index];
 }
 

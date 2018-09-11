@@ -170,10 +170,14 @@ int debugCDA(CDA *items,int level)
 void freeCDA(CDA *items)
 {
 	if (items->freeMethod != NULL)
-	for (int i = 0; i < items->sizeDA; i++)
+	{
+		for (int i = 0; i < items->sizeDA; i++)
 		{
-			items->freeMethod(items->data[(items->startIndex+i)%items->capacity]);
+			items->freeMethod(items->data[(items->startIndex + i) % items->capacity]);
 		}
+		items->freeMethod(items->data);
+		free(items);
+	}
 }
 
 // Replaces the value or if == size makes a new one
