@@ -10,11 +10,11 @@ File author: Connor Adams
 
 struct da
 {
-  // Components
-  void **data;
-  int capacity, sizeDA, debugFlag; // Capacity == Total size, size == used size
-  void (*displayMethod)(void *,FILE *);
-  void (*freeMethod)(void *);
+	// Components
+	void **data;
+	int capacity, sizeDA, debugFlag; // Capacity == Total size, size == used size
+	void (*displayMethod)(void *,FILE *);
+	void (*freeMethod)(void *);
 };
 
 // This function is just going to double the size of a dynamic array
@@ -36,8 +36,8 @@ void doubleStorage(DA *items)
 // Function made for halving storage size for the remove function
 void halfStorage(DA *items)
 {
-  items->capacity /= 2;
-  items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
+	items->capacity /= 2;
+	items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
 }
 
 // Just returns the max capacity
@@ -53,6 +53,7 @@ DA *newDA(void)
 	newDA = (DA *) malloc(sizeof(DA));
 	newDA->data = NULL;
 	newDA->displayMethod = NULL;
+	newDA->freeMethod = NULL;
 	newDA->capacity = 1;
 	newDA->sizeDA = 0;
 	newDA->debugFlag = 0;
@@ -161,31 +162,31 @@ void *getDA(DA *items, int index)
 // Passed a function that knows how to free a generic datatype
 void setDAfree(DA *items,void (*freeMethod)(void *))
 {
-  for (int i = 0; i < items->capacity; i++)
-  {
-    freeMethod(items->data[i]);
-  }
-  items->freeMethod = freeMethod;
+	for (int i = 0; i < items->capacity; i++)
+	{
+		freeMethod(items->data[i]);
+	}
+	items->freeMethod = freeMethod;
 }
 
 // Outputs the stored values followed by the number of unfilled slots
 int debugDA(DA *items,int level)
 {
-  int prevVal = items->debugFlag;
-  items->debugFlag = level;
-  return prevVal;
+	int prevVal = items->debugFlag;
+	items->debugFlag = level;
+	return prevVal;
 }
 
 // Replaces the value or if == size makes a new one
 void *setDA(DA *items, int index, void* value )
 {
-  if (items->sizeDA == index)
-    insertDA(items, index, value);
-  else if (index > items->sizeDA)
-    return NULL; // TODO: Nullptr I tihnk?
-  else
-    items->data[index] = value;
-  return items->data[index];
+	if (items->sizeDA == index)
+		insertDA(items, index, value);
+	else if (index > items->sizeDA)
+		return NULL; // TODO: Nullptr I tihnk?
+	else
+		items->data[index] = value;
+	return items->data[index];
 }
 
 // Moves the data from donor to recipient
@@ -197,7 +198,7 @@ void unionDA(DA *recipient, DA *donor)
 	for (int i = 0; recipient->sizeDA < maxSize; i++, recipient->sizeDA++)
 	{
 		recipient->data[recipient->sizeDA] = donor->data[i];
-		
 	}
-	free(donor);
+	printf("\n\nTHE UNION SIZE IS %d\n", recipient->sizeDA);
+	free(donor); // TODO: VERIFY IF I NEED TO DO THIS
 }

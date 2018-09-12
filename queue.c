@@ -16,14 +16,6 @@ struct queue
 	int debugFlag;
 };
 
-// Again, for refrencing
-struct cda
-{
-	void **data;
-	int capacity, sizeDA, debugFlag, startIndex;
-	void(*displayMethod)(void *, FILE *);
-	void(*freeMethod)(void *);
-};
 
 // Creates a new QUEUE struct
 QUEUE *newQUEUE(void)
@@ -31,6 +23,9 @@ QUEUE *newQUEUE(void)
 	QUEUE *newQ;
 	newQ = (QUEUE *)malloc(sizeof(QUEUE));
 	newQ->cda = newCDA();
+	newQ->debugFlag = 0;
+	newQ->freeMethod = NULL;
+	newQ->displayMethod = NULL;
 	return newQ;
 }
 
@@ -69,22 +64,26 @@ void *peekQUEUE(QUEUE *items)
 // Shows the values in order from lowest to highest index
 void displayQUEUE(QUEUE *items, FILE *fp)
 {
-	fprintf(fp, "<");
-	for (int i = items->cda->startIndex; i < sizeCDA(items->cda); i++)
+	if (items->debugFlag == 1)
 	{
-		if (i != items->cda->startIndex)
+		displayCDA(items->cda, fp);
+		return;
+	}
+	else if (items->debugFlag == 2)
+	{
+		debugCDA(items->cda, items->debugFlag);
+		displayCDA(items->cda, fp);
+		return;
+	}
+	fprintf(fp, "<");
+	for (int i = 0; i < sizeCDA(items->cda); i++)
+	{
+		if (i != 0)
 			fprintf(fp, ",");
 		if (items->displayMethod == NULL)
-			fprintf(fp, "@%p", getCDA(items->cda, i % items->cda->capacity));
+			fprintf(fp, "@%p", getCDA(items->cda, i));
 		else
-			items->displayMethod(getCDA(items->cda, i % items->cda->capacity), fp);
-	}
-	if (items->debugFlag > 0)
-	{
-		if (sizeCDA(items->cda) > 0)
-			fprintf(fp, ",<%d>", items->cda->capacity - items->cda->sizeDA);
-		else
-			fprintf(fp, "<%d>", items->cda->capacity - items->cda->sizeDA);
+			items->displayMethod(getCDA(items->cda, i), fp);
 	}
 	fprintf(fp, ">");
 }
@@ -100,7 +99,11 @@ int debugQUEUE(QUEUE *items, int level)
 // Runs the stores free algo on the cda
 void freeQUEUE(QUEUE *items)
 {
-	freeCDA(items->cda);
+	if (items->freeMethod != NULL)
+	{
+		freeCDA(items->cda);
+		items->freeMethod(items);
+	}
 }
 
 // Returns the size of the queue

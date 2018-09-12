@@ -9,10 +9,10 @@ File author: Connor Adams
 
 struct cda
 {
-  void **data;
-  int capacity, sizeDA, debugFlag, startIndex;
-  void (*displayMethod)(void *,FILE *);
-  void (*freeMethod)(void *);
+	void **data;
+	int capacity, sizeDA, debugFlag, startIndex;
+	void (*displayMethod)(void *,FILE *);
+	void (*freeMethod)(void *);
 };
 
 // This function is just going to double the size of a dynamic array
@@ -24,71 +24,74 @@ void doubleCDAStorage(CDA *items) //TODO: FIC THE REALLOC ERROR: WILL NOT SHIFT 
 		holder[i % (items->capacity * 2)] = items->data[i % (items->capacity)];
 	}
 	items->capacity *= 2;
+	free(items->data);
 	items->data = (void**)malloc(sizeof(void*) * items->capacity);
 	for (int i = items->startIndex; i < items->sizeDA; i++)
 	{
 		items->data[i % (items->capacity)] = holder[i % (items->capacity)];
 	}
+	free(holder);
 }
 
 // Function made for halving storage size for the remove function
 void halfCDAStorage(CDA *items)
 {
-  items->capacity /= 2;
-  items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
+	items->capacity /= 2;
+	items->data = (void**)realloc(items->data, sizeof(void*) * items->capacity);
 }
 
 // Creates a new CDA and returns it
 CDA *newCDA(void)
 {
-  CDA *newCDA;
-  newCDA = (CDA *) malloc(sizeof(CDA));
-  newCDA->data = (void**)malloc(sizeof(void*));
-  newCDA->displayMethod = NULL;
-  newCDA->capacity = 1;
-  newCDA->sizeDA = 0;
-  newCDA->debugFlag = 0;
-  newCDA->startIndex = 0;
-  return newCDA;
+	CDA *newCDA;
+	newCDA = (CDA *) malloc(sizeof(CDA));
+	newCDA->data = (void**)malloc(sizeof(void*));
+	newCDA->capacity = 1;
+	newCDA->sizeDA = 0;
+	newCDA->debugFlag = 0;
+	newCDA->startIndex = 0;
+	newCDA->freeMethod = NULL;
+	newCDA->displayMethod = NULL;
+	return newCDA;
 }
 
 // Takes in and stores the display method for CDA
 void setCDAdisplay(CDA *items, void (*displayInput)(void *,FILE *) )
 {
-  items->displayMethod = displayInput;
+	items->displayMethod = displayInput;
 }
 
 // Takes in and stores the free method for CDA
 void setCDAfree(CDA *items, void (*freeInput)(void *))
 {
-  items->freeMethod = freeInput;
+	items->freeMethod = freeInput;
 }
 
 // Returns the value at index, corrected for index start num
 void *getCDA(CDA *items, int index)
 {
-  assert(index >= 0 && index < items->sizeDA); // TODO: Verify capacity is 0 index and this is valid
-  if (items->startIndex + index > items->sizeDA)
-    index = (index + items->startIndex) - items->sizeDA;
-  return items->data[index];
+	assert(index >= 0 && index < items->sizeDA); // TODO: Verify capacity is 0 index and this is valid
+	if (items->startIndex + index > items->sizeDA)
+		index = (index + items->startIndex) - items->sizeDA;
+	return items->data[index];
 }
 
 // Inserts a value at the index, corrected for index start
 void insertCDA(CDA *items, int index, void *value)
 {
-  assert(index <= items->sizeDA && index > -1);
-  if (items->sizeDA == items->capacity)
-    doubleCDAStorage(items);
-  void *holder;
-  void *prevValue = value;
-  // Shift values
-  for (int i = index + items->startIndex; i <= items->sizeDA + items->startIndex; i++)
-  {
-    holder = items->data[i];
-    items->data[i] = prevValue;
-    prevValue = holder;
-  }
-  items->sizeDA++;
+	assert(index <= items->sizeDA && index > -1);
+	if (items->sizeDA == items->capacity)
+		doubleCDAStorage(items);
+	void *holder = NULL;
+	void *prevValue = value;
+	// Shift values
+	for (int i = index + items->startIndex; i <= items->sizeDA + items->startIndex; i++)
+	{
+		holder = items->data[i];
+		items->data[i] = prevValue;
+		prevValue = holder;
+	}
+	items->sizeDA++;
 }
 
 // Removes data at index, corrected for index start
@@ -109,7 +112,7 @@ void *removeCDA(CDA *items, int index) // TODO: Make this correct for index
 // Returns the size of the given CDA
 int sizeCDA(CDA *items)
 {
-  return items->sizeDA;
+	return items->sizeDA;
 }
 
 // Combines the donor into the recipient
@@ -171,12 +174,12 @@ void freeCDA(CDA *items)
 {
 	if (items->freeMethod != NULL)
 	{
-		for (int i = items->startIndex; i < items->sizeDA; i++)
+		for (int i = 0; i < items->sizeDA; i++)
 		{
 			items->freeMethod(items->data[(items->startIndex + i) % items->capacity]);
 		}
-		items->freeMethod(items->data);
-		free(items);
+		free(items->data);
+		items->freeMethod(items);
 	}
 }
 
@@ -184,12 +187,12 @@ void freeCDA(CDA *items)
 void *setCDA(CDA *items, int index, void* value )
 {
 	if (items->sizeDA == index)
-	insertCDA(items, index, value);
+		insertCDA(items, index, value);
 	else if (index == -1)
-	insertCDAfront(items, value);
+		insertCDAfront(items, value);
 	else if (index > items->sizeDA)
-	return NULL; // TODO: Nullptr I tihnk?
+		return NULL; // TODO: Nullptr I tihnk?
 	else
-	items->data[index] = value;
+		items->data[index] = value;
 	return items->data[index];
 }

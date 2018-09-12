@@ -177,19 +177,20 @@ main(void)
 	printf("Freeing the list.\n");
 	freeQUEUE(queueItems);
 
-	printf("\nGeneral pass test. Starting deep queue testing\n\n");
-
-	QUEUE *qTest = newQUEUE();
-	enqueue(qTest, newINTEGER(3));
-	enqueue(qTest, newINTEGER(2));
-	enqueue(qTest, newINTEGER(4));
-	enqueue(qTest, newINTEGER(1));
-	showQUEUEItems(qTest);
-	QUEUE *qTest2 = newQUEUE();
-	qTest2->cda = qTest->cda;
-	showQUEUEItems(qTest2);
-	unionCDA(qTest->cda, qTest2->cda);
-	showQUEUEItems(qTest);
+	printf("Deep stack test\n\n");
+	STACK *deepStack = newSTACK();
+	push(deepStack, newINTEGER(3));
+	push(deepStack, newINTEGER(2));
+	push(deepStack, newINTEGER(4));
+	push(deepStack, newINTEGER(1));
+	showSTACKItems(deepStack);
+	DA *tempDA = newDA();
+	insertDA(tempDA, 0, newINTEGER(3));
+	insertDA(tempDA, 0, newINTEGER(2));
+	insertDA(tempDA, 0, newINTEGER(4));
+	insertDA(tempDA, 0, newINTEGER(1));
+	showSTACKItems(deepStack);
+	showItems(tempDA);
 	return 0;
 }
 
