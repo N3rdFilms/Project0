@@ -101,7 +101,7 @@ void *removeCDA(CDA *items, int index) // TODO: Make this correct for index
 	void *returnVal = items->data[index];
 	for (int i = index; i < items->sizeDA-1; i++)
 	{
-		items->data[i] = items ->data[i+1];
+		items->data[i%items->capacity] = items->data[(i+1) % items->capacity];
 	}
 	items->sizeDA-=1;
 	while (((float)(items->sizeDA / (float)items->capacity) < 0.25f && items->capacity > 1) )
@@ -128,7 +128,7 @@ void unionCDA(CDA *recipient, CDA *donor)
 }
 
 // Uses the stored display method to display the data
-void displayCDA(CDA *items, FILE *fp) // TODO: MAKE CORRECTIONS FOR NON-0 INDEX
+void displayCDA(CDA *items, FILE *fp) 
 {
 	fprintf(fp, "(");
 	for (int i = items->startIndex; i < items->sizeDA; i++)
