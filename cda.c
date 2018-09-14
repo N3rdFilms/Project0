@@ -16,7 +16,7 @@ struct cda
 };
 
 // This function is just going to double the size of a dynamic array
-void doubleCDAStorage(CDA *items) //TODO: FIC THE REALLOC ERROR: WILL NOT SHIFT AS NEEDED!!
+void doubleCDAStorage(CDA *items) //TODO: VERIFY THE CHANGE FROM REALLOC WORKED
 {
 	void **holder = (void**)malloc(sizeof(void*) * items->capacity * 2);
 	for (int i = items->startIndex; i < items->sizeDA; i++)
@@ -87,15 +87,15 @@ void insertCDA(CDA *items, int index, void *value)
 	// Shift values
 	for (int i = index + items->startIndex; i <= items->sizeDA + items->startIndex; i++)
 	{
-		holder = items->data[i];
-		items->data[i] = prevValue;
+		holder = items->data[i % items->capacity];
+		items->data[i % items->capacity] = prevValue;
 		prevValue = holder;
 	}
 	items->sizeDA++;
 }
 
 // Removes data at index, corrected for index start
-void *removeCDA(CDA *items, int index) // TODO: Make this correct for index
+void *removeCDA(CDA *items, int index)
 {
 	assert(index < items->sizeDA && index > -1);
 	void *returnVal = items->data[index];

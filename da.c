@@ -199,6 +199,5 @@ void unionDA(DA *recipient, DA *donor)
 	{
 		recipient->data[recipient->sizeDA] = donor->data[i];
 	}
-	printf("\n\nTHE UNION SIZE IS %d\n", recipient->sizeDA);
-	free(donor); // TODO: VERIFY IF I NEED TO DO THIS
+	free(donor); 
 }
