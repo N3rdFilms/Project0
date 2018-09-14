@@ -1,3 +1,11 @@
+/*
+Stack Header File - Based on Dynamic Array base
+The purpose of this file is relatively simple, it is a header
+Foundation for the file is provided at:
+http://beastie.cs.ua.edu/cs201/assign-stack.html
+File author: Connor Adams
+*/
+
 #ifndef __STACK_INCLUDED__
 #define __STACK_INCLUDED__
 

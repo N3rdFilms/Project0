@@ -131,22 +131,6 @@ main(void)
 	holder = getDA(secondstackItems->dynamicArr, 0);
 	showSTACKItems(secondstackItems);
 	holder = peekSTACK(secondstackItems);
-	////unionDA(secondstackItems, stackItems);
-	//printf("Peek value: %p\n", peekSTACK(stackItems));
-	//push(secondstackItems,newINTEGER(8));
-	//push(secondstackItems,newINTEGER(3));
-	//printf("Going to show second items\n");
-	//showSTACKItems(secondstackItems);
-	//printf("The value ");
-	////printf("%p", pop(stackItems));
-	//INTEGER *k = pop(stackItems);
-	//displayINTEGER(k,stdout);
-	//printf(" was removed.\n");
-	//freeINTEGER(k);
-	//showSTACKItems(stackItems);
-	//int z = getINTEGER((INTEGER *) pop(stackItems));
-	//printf("The last item pop-able is %d.\n",z);
-	//printf("Freeing the list.\n");
 	free(holder);
 	freeSTACK(stackItems);
 
@@ -177,20 +161,6 @@ main(void)
 	printf("Freeing the list.\n");
 	freeQUEUE(queueItems);
 
-	printf("Deep stack test\n\n");
-	STACK *deepStack = newSTACK();
-	push(deepStack, newINTEGER(3));
-	push(deepStack, newINTEGER(2));
-	push(deepStack, newINTEGER(4));
-	push(deepStack, newINTEGER(1));
-	showSTACKItems(deepStack);
-	DA *tempDA = newDA();
-	insertDA(tempDA, 0, newINTEGER(3));
-	insertDA(tempDA, 0, newINTEGER(2));
-	insertDA(tempDA, 0, newINTEGER(4));
-	insertDA(tempDA, 0, newINTEGER(1));
-	showSTACKItems(deepStack);
-	showItems(tempDA);
 	return 0;
 }
 
