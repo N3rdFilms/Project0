@@ -194,10 +194,10 @@ void unionDA(DA *recipient, DA *donor)
 {
 	while (recipient->capacity < (recipient->sizeDA + donor->sizeDA)) 
 		doubleStorage(recipient);
-	int maxSize = recipient->sizeDA + donor->sizeDA;
+	int maxSize = recipient->sizeDA + donor->sizeDA - 1;
 	for (int i = 0; recipient->sizeDA < maxSize; i++, recipient->sizeDA++)
 	{
-		recipient->data[recipient->sizeDA] = donor->data[i];
+		recipient->data[recipient->sizeDA] = removeDA(donor, 0);
 	}
-	free(donor); 
+	//free(donor); 
 }

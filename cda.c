@@ -120,11 +120,12 @@ void unionCDA(CDA *recipient, CDA *donor)
 {
 	while (recipient->capacity < recipient->sizeDA + donor->sizeDA)
 		doubleCDAStorage(recipient);
-	for (int i = 0; i < donor->sizeDA; i++)
+	int donorSize = donor->sizeDA;
+	for (int i = 0; i < donorSize; i++)
 	{
-		recipient->data[(recipient->sizeDA + i)%recipient->capacity] = donor->data[i];
+		recipient->data[(recipient->sizeDA + i) % recipient->capacity] = removeCDA(donor, 0); //donor->data[i];
 	}
-	recipient->sizeDA += donor->sizeDA;
+	recipient->sizeDA = donorSize;
 }
 
 // Uses the stored display method to display the data

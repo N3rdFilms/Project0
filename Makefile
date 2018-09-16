@@ -2,10 +2,10 @@ OBJS = da.o cda.o stack.o queue.o integer.o testFile.o
 OOPTS = -Wall -Wextra -g -c
 LOPTS = -Wall -Wextra -g
 
-all : test-project0
+all : project0
 
-test-project0 : $(OBJS)
-	gcc $(LOPTS) $(OBJS) -o test-project0
+project0 : $(OBJS)
+	gcc $(LOPTS) $(OBJS) -o project0
 
 da.o : da.c da.h
 	gcc $(OOPTS) da.c
@@ -25,11 +25,11 @@ integer.o : integer.c integer.h
 testFile.o :	testFile.c da.h cda.h integer.h queue.h
 	gcc $(OOPTS) testFile.c
 
-test : test-project0
-	./test-project0
+test : project0
+	./project0
 
-valgrind : test-project0
-	valgrind test-project0
+valgrind : project0
+	valgrind project0
 
 clean	:
-	rm -f $(OBJS) test-project0
+	rm -f $(OBJS) project0
