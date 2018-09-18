@@ -1,5 +1,5 @@
 OBJS = da.o cda.o stack.o queue.o integer.o testFile.o
-OOPTS = -Wall -Wextra -g -c
+OOPTS = -Wall -Wextra -g -std=c99 -c
 LOPTS = -Wall -Wextra -g
 
 all : project0

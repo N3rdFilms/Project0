@@ -121,7 +121,7 @@ void unionCDA(CDA *recipient, CDA *donor)
 	while (recipient->capacity < recipient->sizeDA + donor->sizeDA)
 		doubleCDAStorage(recipient);
 	int donorSize = donor->sizeDA;
-	for (int i = 0; i < donorSize; i++)
+	for (int i = 0; i < donorSize; i++) //TODO: MAKE THIS RUN IN THE RIGHT TIME YOU FUCK
 	{
 		recipient->data[(recipient->sizeDA + i) % recipient->capacity] = removeCDA(donor, 0); //donor->data[i];
 	}
@@ -187,10 +187,17 @@ void freeCDA(CDA *items)
 // Replaces the value or if == size makes a new one
 void *setCDA(CDA *items, int index, void* value )
 {
+	assert(index >= -1 && index <= items->capacity);
 	if (items->sizeDA == index)
+	{
 		insertCDA(items, index, value);
+		return NULL;
+	}
 	else if (index == -1)
+	{
 		insertCDAfront(items, value);
+		return NULL;
+	}
 	else if (index > items->sizeDA)
 		return NULL; // TODO: Nullptr I tihnk?
 	else

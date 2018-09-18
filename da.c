@@ -180,13 +180,22 @@ int debugDA(DA *items,int level)
 // Replaces the value or if == size makes a new one
 void *setDA(DA *items, int index, void* value )
 {
+	assert(index > -1 && index <= items->capacity);
+	void *tempVoid;
 	if (items->sizeDA == index)
+	{
 		insertDA(items, index, value);
+		return NULL;
+	}
 	else if (index > items->sizeDA)
 		return NULL; // TODO: Nullptr I tihnk?
 	else
+	{
+		tempVoid = items->data[index];
 		items->data[index] = value;
-	return items->data[index];
+	}
+	return tempVoid;
+	//return 0;
 }
 
 // Moves the data from donor to recipient
@@ -194,10 +203,12 @@ void unionDA(DA *recipient, DA *donor)
 {
 	while (recipient->capacity < (recipient->sizeDA + donor->sizeDA)) 
 		doubleStorage(recipient);
-	int maxSize = recipient->sizeDA + donor->sizeDA - 1;
+	int maxSize = recipient->sizeDA + donor->sizeDA;
 	for (int i = 0; recipient->sizeDA < maxSize; i++, recipient->sizeDA++)
 	{
-		recipient->data[recipient->sizeDA] = removeDA(donor, 0);
+		recipient->data[recipient->sizeDA] = donor->data[i];//removeDA(donor, 0);
 	}
-	//free(donor); 
+	realloc(donor->data, sizeof(void*));
+	donor->sizeDA = 0;
+	donor->capacity = 1;
 }
