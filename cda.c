@@ -123,13 +123,16 @@ void unionCDA(CDA *recipient, CDA *donor)
 	int donorSize = donor->sizeDA;
 	for (int i = 0; i < donorSize; i++) //TODO: MAKE THIS RUN IN THE RIGHT TIME YOU FUCK
 	{
-		recipient->data[(recipient->sizeDA + i) % recipient->capacity] = removeCDA(donor, 0); //donor->data[i];
+		recipient->data[(recipient->sizeDA + i) % recipient->capacity] = donor->data[(donor->startIndex + i) % donor->capacity];
 	}
-	recipient->sizeDA = donorSize;
+	recipient->sizeDA += donor->sizeDA;
+	donor->sizeDA = 0;
+	donor->capacity = 1;
+	donor->data = malloc(sizeof(void*));
 }
 
 // Uses the stored display method to display the data
-void displayCDA(CDA *items, FILE *fp) 
+void displayCDA(CDA *items, FILE *fp)
 {
 	fprintf(fp, "(");
 	for (int i = items->startIndex; i < items->sizeDA; i++)

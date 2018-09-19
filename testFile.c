@@ -249,12 +249,16 @@ void queueTester()
 
 void attemptToBreakCDA()
 {
+	printf("BEGIN TEST\n");
 	CDA *testCDA = newCDA();
+	CDA *testCDA2 = newCDA();
 	for (int i = 0; i < 10; i++)
 	{
 		insertCDA(testCDA, 0, newINTEGER(rand() % 100));
+		insertCDA(testCDA2, 0, newINTEGER(rand() % 100));
 	}
 	setCDAdisplay(testCDA, displayINTEGER);
+	setCDAdisplay(testCDA2, displayINTEGER);
 	displayCDA(testCDA, stdout);
 	printf("\n");
 	for (int i = 0; i < 10; i++)
@@ -267,8 +271,13 @@ void attemptToBreakCDA()
 	removeCDAfront(testCDA);
 	setCDA(testCDA, -1, newINTEGER(99999));
 	displayCDA(testCDA, stdout);
-
+	printf("\n");
+	displayCDA(testCDA2, stdout);
+	unionCDA(testCDA, testCDA2);
+	displayCDA(testCDA, stdout);
+	freeCDA(testCDA2);
 	freeCDA(testCDA);
+	printf("\n\nEND TEST");
 }
 //
 //int main(void)
@@ -360,5 +369,7 @@ main(void)
 	}
 	freeCDA(p);
 	freeCDA(q);
+	attemptToBreakCDA();
+	cdaTester();
 	return 0;
 }
