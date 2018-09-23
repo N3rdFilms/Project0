@@ -58,7 +58,7 @@ void *dequeue(QUEUE *items)
 // Shows the next value to be dequeued
 void *peekQUEUE(QUEUE *items)
 {
-	return getCDA(items->cda, sizeCDA(items->cda) - 1);
+	return getCDA(items->cda, 0);
 }
 
 // Shows the values in order from lowest to highest index

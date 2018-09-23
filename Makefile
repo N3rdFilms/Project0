@@ -1,6 +1,6 @@
-OBJS = da.o cda.o stack.o queue.o integer.o testFile.o
-OOPTS = -Wall -Wextra -g -std=c99 -c
-LOPTS = -Wall -Wextra -g
+OBJS = da.o cda.o stack.o queue.o integer.o testFile.o real.o string.o
+OOPTS = -Wall -Wextra -g -std=c99 -c 
+LOPTS = -Wall -Wextra -g 
 
 all : project0
 
@@ -21,6 +21,12 @@ queue.o : queue.c queue.h
 
 integer.o : integer.c integer.h
 	gcc $(OOPTS) integer.c
+
+real.o : real.c real.h
+	gcc $(OOPTS) real.c
+
+string.o : string.c string.h
+	gcc $(OOPTS) string.c
 
 testFile.o :	testFile.c da.h cda.h integer.h queue.h
 	gcc $(OOPTS) testFile.c
