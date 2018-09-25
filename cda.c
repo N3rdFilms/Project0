@@ -108,7 +108,7 @@ void insertCDA(CDA *items, int index, void *value)
 		//printf("=\n");
 		items->data[(items->startIndex + index) % items->capacity] = value;
 	}
-	else 
+	else
 	{
 		void *holder = NULL;
 		void *prevValue = value;
@@ -177,7 +177,7 @@ void *removeCDA(CDA *items, int index)
 				items->startIndex = 1;
 			}
 		}
-		// Between half and the end so just shift 
+		// Between half and the end so just shift
 		else
 		{
 			returnVal = items->data[(items->startIndex + index) % items->capacity];
@@ -188,7 +188,7 @@ void *removeCDA(CDA *items, int index)
 		}
 	}
 	items->sizeDA--;
-	while (((float)(items->sizeDA / (float)items->capacity) < 0.25f && items->capacity > 1))
+	if (((float)(items->sizeDA / (float)items->capacity) < 0.25f && items->capacity > 1))
 		halfCDAStorage(items);
 	return returnVal;
 }
