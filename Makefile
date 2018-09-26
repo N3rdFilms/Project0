@@ -7,28 +7,28 @@ all : project0
 project0 : $(OBJS)
 	gcc $(LOPTS) $(OBJS) -o project0
 
-da.o : da.c da.h
+da.o : da.h da.c
 	gcc $(OOPTS) da.c
 
-cda.o : cda.c cda.h
+cda.o : cda.h cda.c
 	gcc $(OOPTS) cda.c
 
-stack.o : stack.c stack.h
+stack.o : stack.h stack.c
 	gcc $(OOPTS) stack.c
 
-queue.o : queue.c queue.h
+queue.o : queue.h queue.c
 	gcc $(OOPTS) queue.c
 
-integer.o : integer.c integer.h
+integer.o : integer.h integer.c
 	gcc $(OOPTS) integer.c
 
-real.o : real.c real.h
+real.o : real.h real.c
 	gcc $(OOPTS) real.c
 
-string.o : string.c string.h
+string.o : string.h string.c
 	gcc $(OOPTS) string.c
 
-testFile.o :	testFile.c da.h cda.h integer.h queue.h
+testFile.o : testFile.c da.h cda.h integer.h queue.h
 	gcc $(OOPTS) testFile.c
 
 test : project0
@@ -37,5 +37,5 @@ test : project0
 valgrind : project0
 	valgrind project0
 
-clean	:
+clean:
 	rm -f $(OBJS) project0

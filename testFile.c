@@ -41,8 +41,8 @@ display(CDA *p, char *intro)
 int
 main(void)
 {
-	srandom(19);
-	int i, r, rounds = 2, size = 165463;
+	srandom(1025);
+	int i, r, rounds = 2, size = 1942;
 	printf("INTEGER test of CDA, insertions and deletions at front\n");
 	CDA *p = newCDA();
 	setCDAdisplay(p, displayINTEGER);
