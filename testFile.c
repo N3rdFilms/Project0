@@ -41,9 +41,9 @@ display(CDA *p, char *intro)
 int
 main(void)
 {
-	srandom(1025);
-	int i, r, rounds = 2, size = 1942;
-	printf("INTEGER test of CDA, insertions and deletions at front\n");
+	srandom(1027);
+	int i, r, rounds = 2, size = 1532, dist = 10;
+	printf("INTEGER test of CDA, delete all\n");
 	CDA *p = newCDA();
 	setCDAdisplay(p, displayINTEGER);
 	setCDAfree(p, freeINTEGER);
@@ -53,16 +53,21 @@ main(void)
 	{
 		for (i = 0; i < size; ++i)
 		{
-			int j = random() % size;
-			int k = 0;
-			insertCDA(p, k, newINTEGER(j));
+			int k = sizeCDA(p) < dist ? 0 : random() % dist;
+			if (random() % 2 == 1) //back
+				k = sizeCDA(p) - k;
+			insertCDA(p, k, newINTEGER(i));
 		}
-		int limit = size - random() % size / 2;
-		for (i = 0; i < limit; ++i)
+		display(p, "items: ");
+		printf("size is %d\n", sizeCDA(p));
+		while (sizeCDA(p) - r > 0)
 		{
-			int k = 0;
+			int k = sizeCDA(p) < dist ? 0 : random() % dist;
+			if (random() % 2 == 1) //back
+				k = (sizeCDA(p) - 1) - k;
 			freeINTEGER(removeCDA(p, k));
 		}
+		insertCDA(p, 0, newINTEGER(1));
 		display(p, "items: ");
 		printf("size is %d\n", sizeCDA(p));
 	}

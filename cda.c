@@ -150,10 +150,10 @@ void *removeCDA(CDA *items, int index)
 	if (index == 0)
 	{
 		returnVal = items->data[items->startIndex];
-		if (items->startIndex < items->capacity)
+		if (items->startIndex < items->capacity - 1)
 			items->startIndex += 1;
 		else
-			items->startIndex = 1;
+			items->startIndex = 0;
 	}
 	// Take the end off
 	else if (index == items->sizeDA)
@@ -170,11 +170,11 @@ void *removeCDA(CDA *items, int index)
 			{
 				items->data[(items->startIndex + index - i) % items->capacity] = items->data[(items->startIndex + index - i - 1) % items->capacity];
 			}
-			if (items->startIndex < items->capacity)
+			if (items->startIndex < items->capacity - 1)
 				items->startIndex += 1;
 			else
 			{
-				items->startIndex = 1;
+				items->startIndex = 0;
 			}
 		}
 		// Between half and the end so just shift
@@ -188,7 +188,7 @@ void *removeCDA(CDA *items, int index)
 		}
 	}
 	items->sizeDA--;
-	if (((float)(items->sizeDA / (float)items->capacity) < 0.25f && items->capacity > 1))
+	while (((float)(items->sizeDA / (float)items->capacity) < 0.25f && items->capacity > 1))
 		halfCDAStorage(items);
 	return returnVal;
 }
@@ -204,8 +204,13 @@ void unionCDA(CDA *recipient, CDA *donor)
 {
 	for (int i = 0; i < donor->sizeDA; i++)
 	{
-		insertCDA(recipient, sizeCDA(recipient), removeCDAfront(donor));
+		//insertCDA(recipient, sizeCDA(recipient), removeCDAfront(donor));
+		insertCDA(recipient, sizeCDA(recipient), getCDA(donor, i));
 	}
+	donor->data = (void**)malloc(sizeof(void*));
+	donor->sizeDA = 0;
+	donor->capacity = 1;
+	donor->startIndex = 0;
 }
 
 // Uses the stored display method to display the data
@@ -225,9 +230,9 @@ void displayCDA(CDA *items, FILE *fp)
 	if (items->debugFlag > 0)
 	{
 		if (items->sizeDA > 0)
-			fprintf(fp, ",(%d)", items->capacity - items->sizeDA);
+			fprintf(fp, ",(%d)", items->capacity - sizeCDA(items)); //items->sizeDA);
 		else
-			fprintf(fp, "(%d)", items->capacity - items->sizeDA);
+			fprintf(fp, "(%d)", items->capacity - sizeCDA(items)); //items->sizeDA);
 	}
 	fprintf(fp, ")");
 }
