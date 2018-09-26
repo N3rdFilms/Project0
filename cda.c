@@ -38,7 +38,7 @@ void halfCDAStorage(CDA *items)
 	void **holder = (void**)malloc(sizeof(void*) * items->capacity);
 	for (int i = 0; i < items->sizeDA; i++)
 	{ // This is going to re-index at 0
-		holder[i] = getCDA(items, i);
+		holder[i] = items->data[(i + items->startIndex) % items->capacity];
 	}
 	items->capacity /= 2;
 	free(items->data);
@@ -94,15 +94,18 @@ void insertCDA(CDA *items, int index, void *value)
 	// Shift into the front
 	if (index == 0 && items->sizeDA > 1)
 	{
+		//printf("*\n");
 		if (items->startIndex > 0)
 			items->startIndex -= 1;
 		else
 			items->startIndex = items->capacity - 1;
 		items->data[items->startIndex] = value;
+		//printf("S: %d\n", items->startIndex);
 	}
 	// Just put on the end
 	else if (index == items->sizeDA)
 	{
+		//printf("=\n");
 		items->data[(items->startIndex + index) % items->capacity] = value;
 	}
 	else
@@ -114,8 +117,8 @@ void insertCDA(CDA *items, int index, void *value)
 		{
 			for (int i = index-1; i >= 0; i--)
 			{
-				holder = getCDA(items, (i + items->startIndex) % items->capacity);//  items->data[(i + items->startIndex) % items->capacity];
-				setCDA(items, (i + items->startIndex) % items->capacity, prevValue);
+				holder = items->data[(i + items->startIndex) % items->capacity];
+				items->data[(i + items->startIndex) % items->capacity] = prevValue;
 				prevValue = holder;
 			}
 			if (items->startIndex > 0)
@@ -147,38 +150,40 @@ void *removeCDA(CDA *items, int index)
 	if (index == 0)
 	{
 		returnVal = items->data[items->startIndex];
-		if (items->startIndex < items->capacity - 1)
+		if (items->startIndex < items->capacity)
 			items->startIndex += 1;
 		else
-			items->startIndex = 0;
+			items->startIndex = 1;
 	}
 	// Take the end off
 	else if (index == items->sizeDA)
 	{
-		returnVal = getCDA(items, index);
+		returnVal = items->data[(items->startIndex + index) % items->capacity];
 	}
 	else
 	{
 		// Between half and front, so just shift forward and correct
 		if (index < sizeCDA(items) / 2 && sizeCDA(items) > 1)
 		{
-			returnVal = getCDA(items, index);
+			returnVal = items->data[(items->startIndex + index) % items->capacity];
 			for (int i = 0; i < index; i++)
 			{
-				setCDA(items, i - 1, getCDA(items, i));
+				items->data[(items->startIndex + index - i) % items->capacity] = items->data[(items->startIndex + index - i - 1) % items->capacity];
 			}
-			if (items->startIndex < items->capacity - 1)
+			if (items->startIndex < items->capacity)
 				items->startIndex += 1;
 			else
-				items->startIndex = 0;
+			{
+				items->startIndex = 1;
+			}
 		}
 		// Between half and the end so just shift
 		else
 		{
-			returnVal = getCDA(items, index);
+			returnVal = items->data[(items->startIndex + index) % items->capacity];
 			for (int i = index; i < items->sizeDA - 1; i++)
 			{
-				setCDA(items, i, getCDA(items, i + 1));
+				items->data[(items->startIndex + i) % items->capacity] = items->data[(items->startIndex + i + 1) % items->capacity];
 			}
 		}
 	}

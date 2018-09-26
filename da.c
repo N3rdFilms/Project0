@@ -201,7 +201,7 @@ void *setDA(DA *items, int index, void* value )
 // Moves the data from donor to recipient
 void unionDA(DA *recipient, DA *donor)
 {
-	if (recipient->capacity < (recipient->sizeDA + donor->sizeDA))
+	while (recipient->capacity < (recipient->sizeDA + donor->sizeDA))
 		doubleStorage(recipient);
 	int maxSize = recipient->sizeDA + donor->sizeDA;
 	for (int i = 0; recipient->sizeDA < maxSize; i++, recipient->sizeDA++)
